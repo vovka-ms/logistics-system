@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учет перемещений - Burger King</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .table th {
+            background-color: #f1f1f1;
+        }
+        #transfersTable tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .bg-primary {
+            background-color: #e31837 !important;
+        }
+        .bg-success {
+            background-color: #ffc72c !important;
+        }
+        .btn-primary {
+            background-color: #e31837;
+            border-color: #e31837;
+        }
+        .btn-primary:hover {
+            background-color: #c0112c;
+            border-color: #c0112c;
+        }
+        .unit-selector {
+            display: flex;
+            gap: 10px;
+        }
+        .unit-selector .btn {
+            flex: 1;
+        }
+        .selected {
+            background-color: #e6f7ff !important;
+        }
+        .product-form {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Учет перемещений между ресторанами Burger King</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5>Создать перемещение</h5>
+                        <button type="button" class="btn btn-sm btn-light" id="showProductForm">+ Добавить продукт</button>
+                    </div>
+                    <div class="card-body">
+                        <form id="transferForm">
+                            <div class="mb-3">
+                                <label for="fromRestaurant" class="form-label">Откуда:</label>
+                                <select class="form-select" id="fromRestaurant" required>
+                                    <option value="" selected disabled>Выберите ресторан</option>
+                                    <option value="137">Ресторан 137</option>
+                                    <option value="288">Ресторан 288</option>
+                                    <option value="346">Ресторан 346</option>
+                                    <option value="370">Ресторан 370</option>
+                                    <option value="373">Ресторан 373</option>
+                                    <option value="452">Ресторан 452</option>
+                                    <option value="461">Ресторан 461</option>
+                                    <option value="506">Ресторан 506</option>
+                                    <option value="597">Ресторан 597</option>
+                                    <option value="874">Ресторан 874</option>
+                                    <option value="966">Ресторан 966</option>
+                                    <option value="973">Ресторан 973</option>
+                                    <option value="987">Ресторан 987</option>
+                                    <option value="Rostic's">Ресторан Rostic's</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="toRestaurant" class="form-label">Куда:</label>
+                                <select class="form-select" id="toRestaurant" required>
+                                    <option value="" selected disabled>Выберите ресторан</option>
+                                    <option value="137">Ресторан 137</option>
+                                    <option value="288">Ресторан 288</option>
+                                    <option value="346">Ресторан 346</option>
+                                    <option value="370">Ресторан 370</option>
+                                    <option value="373">Ресторан 373</option>
+                                    <option value="452">Ресторан 452</option>
+                                    <option value="461">Ресторан 461</option>
+                                    <option value="506">Ресторан 506</option>
+                                    <option value="597">Ресторан 597</option>
+                                    <option value="874">Ресторан 874</option>
+                                    <option value="966">Ресторан 966</option>
+                                    <option value="973">Ресторан 973</option>
+                                    <option value="987">Ресторан 987</option>
+                                    <option value="Rostic's">Ресторан Rostic's</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="product" class="form-label">Продукт:</label>
+                                <select class="form-select" id="product" required>
+                                    <option value="" selected disabled>Выберите продукт</option>
+                                    <!-- Продукты будут добавлены через JS -->
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Сливс:</label>
+                                <div class="unit-selector btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="packaging" id="packagingPiece" value="шт" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="packagingPiece">Штуки</label>
+                                    
+                                    <input type="radio" class="btn-check" name="packaging" id="packagingKg" value="кг" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="packagingKg">Килограммы</label>
+                                    
+                                    <input type="radio" class="btn-check" name="packaging" id="packagingBox" value="кор" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="packagingBox">Коробки</label>
+                                    
+                                    <input type="radio" class="btn-check" name="packaging" id="packagingPack" value="сливс" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="packagingPack">Сливс</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Количество:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="quantity" min="1" required>
+                                    <span class="input-group-text" id="unitLabel">шт</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Дата:</label>
+                                <input type="date" class="form-control" id="date" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Комментарий:</label>
+                                <textarea class="form-control" id="comment" rows="2"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Сохранить перемещение</button>
+                        </form>
+
+                        <!-- Форма добавления нового продукта -->
+                        <div class="product-form" id="productForm">
+                            <h5>Добавить новый продукт</h5>
+                            <form id="newProductForm">
+                                <div class="mb-3">
+                                    <label for="newProductCategory" class="form-label">Категория:</label>
+                                    <select class="form-select" id="newProductCategory" required>
+                                        <option value="" selected disabled>Выберите категорию</option>
+                                        <option value="Булочки">Булочки</option>
+                                        <option value="Десерт">Десерт</option>
+                                        <option value="Котлеты">Котлеты</option>
+                                        <option value="Закуска">Закуска</option>
+                                        <option value="Прочее заморозка">Прочее заморозка</option>
+                                        <option value="Молочные продукты">Молочные продукты</option>
+                                        <option value="Сиропы и топпинги">Сиропы и топпинги</option>
+                                        <option value="Соусы dip (25 мл)">Соусы dip (25 мл)</option>
+                                        <option value="Соусы весовые">Соусы весовые</option>
+                                        <option value="Овощи">Овощи</option>
+                                        <option value="Кофе/Чай">Кофе/Чай</option>
+                                        <option value="Напитки">Напитки</option>
+                                        <option value="Пиво в банках">Пиво в банках</option>
+                                        <option value="Пиво на розлив">Пиво на розлив</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newProductCode" class="form-label">Код продукта:</label>
+                                    <input type="text" class="form-control" id="newProductCode" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newProductName" class="form-label">Название продукта:</label>
+                                    <input type="text" class="form-control" id="newProductName" required>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-success">Добавить</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelProductForm">Отмена</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5>История перемещений</h5>
+                        <button type="button" class="btn btn-sm btn-danger" id="deleteSelected" disabled>Удалить выбранные</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Поиск по продуктам или ресторанам...">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAll"></th>
+                                        <th>Дата</th>
+                                        <th>Откуда</th>
+                                        <th>Куда</th>
+                                        <th>Продукт</th>
+                                        <th>Кол-во</th>
+                                        <th>Ед.</th>
+                                        <th>Коммент</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transfersTable">
+                                    <tr>
+                                        <td colspan="8" class="text-center">Нет данных для отображения</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Устанавливаем сегодняшнюю дату по умолчанию
+            document.getElementById('date').valueAsDate = new Date();
+            
+            // Элементы DOM
+            const transferForm = document.getElementById('transferForm');
+            const transfersTable = document.getElementById('transfersTable');
+            const searchInput = document.getElementById('searchInput');
+            const unitLabel = document.getElementById('unitLabel');
+            const packagingRadios = document.querySelectorAll('input[name="packaging"]');
+            const productSelect = document.getElementById('product');
+            const productForm = document.getElementById('productForm');
+            const showProductFormBtn = document.getElementById('showProductForm');
+            const cancelProductFormBtn = document.getElementById('cancelProductForm');
+            const newProductForm = document.getElementById('newProductForm');
+            const deleteSelectedBtn = document.getElementById('deleteSelected');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            
+            // Массив для хранения перемещений
+            let transfers = JSON.parse(localStorage.getItem('bkTransfers')) || [];
+            
+            // Массив для хранения продуктов
+            let products = JSON.parse(localStorage.getItem('bkProducts')) || [
+                // Начальные данные продуктов
+                {id: "55034", name: "Булочка \"Гамбургер\"", category: "Булочки"},
+                {id: "55036", name: "Булочка \"Воппер\"", category: "Булочки"},
+                {id: "55075", name: "Булочка два кунжута", category: "Булочки"},
+                {id: "55076", name: "Булочка Бриошь два кунжута", category: "Булочки"},
+                {id: "56005", name: "Булочка по-деревенски", category: "Булочки"},
+                {id: "68609", name: "Тортилья 9\"", category: "Булочки"},
+                {id: "51610", name: "Брауни", category: "Десерт"},
+                {id: "67418", name: "Вишневые пирожки", category: "Десерт"},
+                {id: "67417", name: "Пирожок Клубника-Банан", category: "Десерт"},
+                {id: "67416", name: "Пирожок Лесная ягода", category: "Десерт"},
+                {id: "51620", name: "Булочка Синнабон", category: "Десерt"},
+                {id: "51172", name: "Рыбное филе - Фиш", category: "Котлеты"},
+                {id: "68697", name: "Hamburger Котлеты ХАЛЯЛЬ", category: "Котлеты"},
+                {id: "68695", name: "Hamburger Котлеты", category: "Котлеты"},
+                {id: "58684", name: "Whopper Котлеты ХАЛЯЛЬ", category: "Котлеты"},
+                {id: "58682", name: "Whopper Котлеты", category: "Котлеты"},
+                {id: "69086", name: "Котлета курино-говяжья", category: "Котлеты"},
+                {id: "68800", name: "Котлеты из говядины Ангус", category: "Котлеты"},
+                {id: "58625", name: "Котлеты Гауда", category: "Котлеты"},
+                {id: "68656", name: "Крылышки Кинг (ТМ) ХАЛЯЛЬ", category: "Закуска"},
+                {id: "68657", name: "Крылья", category: "Закуска"},
+                {id: "68658", name: "Наггетсы ХАЛЯЛЬ", category: "Закуска"},
+                {id: "68659", name: "Наггетсы", category: "Закуска"},
+                {id: "58533", name: "Картофель фри", category: "Закуска"},
+                {id: "58554", name: "По-деревенски", category: "Закуска"},
+                {id: "51180", name: "Креветки в панировке с/м", category: "Закуска"},
+                {id: "69100", name: "Стрипсы куриные", category: "Закуска"},
+                {id: "58686", name: "Луковые кольца", category: "Закуска"},
+                {id: "58558", name: "Сырные монетки НОВЫЕ", category: "Закуска"},
+                {id: "59832", name: "Бекон", category: "Прочее заморозка"},
+                {id: "67500", name: "Карамелизованный лук", category: "Прочее заморозка"},
+                {id: "69890", name: "Лук красный маринованный", category: "Прочее заморозка"},
+                {id: "67510", name: "Грибы жареные", category: "Прочее заморозка"},
+                {id: "51091", name: "Сыр ломтики", category: "Прочее заморозка"},
+                {id: "51300", name: "Сыр пармезан", category: "Прочее заморозка"},
+                {id: "51360", name: "Сыр тертый Микс Трио", category: "Прочее заморозка"},
+                {id: "61175", name: "Молоко 3,2%", category: "Молочные продукты"},
+                {id: "61179", name: "Молоко миндальное", category: "Молочные продукты"},
+                {id: "53229", name: "Смесь Мороженого", category: "Молочные продукты"},
+                {id: "53230", name: "Смесь Коктейля", category: "Молочные продукты"},
+                {id: "51142", name: "Сироп клубничный", category: "Сиропы и топпинги"},
+                {id: "51143", name: "Сироп шоколадный", category: "Сиропы и топпинги"},
+                {id: "51144", name: "Сироп ванильный", category: "Сиропы и топпинги"},
+                {id: "59803", name: "Сироп Малина", category: "Сиропы и топпинги"},
+                {id: "51145", name: "Сироп Лесная ягода", category: "Сиропы и топпинги"},
+                {id: "51152", name: "Топпинг клубничный", category: "Сиропы и топпинги"},
+                {id: "51153", name: "Топпинг шоколадный", category: "Сиропы и топпинги"},
+                {id: "51154", name: "Топпинг Малина", category: "Сиропы и топпинги"},
+                {id: "51151", name: "Топпинг Лесная ягода", category: "Сиропы и топпинги"},
+                {id: "55300", name: "Вафельный рожок (320)", category: "Сиропы и топпинги"},
+                {id: "51058", name: "Кетчуп dip", category: "Соусы dip (25 мл)"},
+                {id: "51205", name: "Барбекю dip", category: "Соусы dip (25 мл)"},
+                {id: "51208", name: "Карри dip", category: "Соусы dip (25 мл)"},
+                {id: "60000", name: "Сырный dip", category: "Соусы dip (25 мл)"},
+                {id: "51203", name: "Кисло-сладкий dip", category: "Соусы dip (25 мл)"},
+                {id: "51210", name: "Чесночный dip", category: "Соусы dip (25 мл)"},
+                {id: "51201", name: "Горчичный dip", category: "Соусы dip (25 мл)"},
+                {id: "51230", name: "Соус 1000 островов dip", category: "Соусы dip (25 мл)"},
+                {id: "51219", name: "Цезарь dip", category: "Соусы dip (25 мл)"},
+                {id: "51212", name: "Соус Parmegiano dip", category: "Соусы dip (25 мл)"},
+                {id: "80090", name: "Соус Гриль dip", category: "Соусы dip (25 мл)"},
+                {id: "83114", name: "Соус томатный острый Хайнц dip", category: "Соусы dip (25 мл)"},
+                {id: "51202", name: "Соус 4 сыра dip", category: "Соусы dip (25 мл)"},
+                {id: "51270", name: "Соус Тар-Тар dip", category: "Соусы dip (25 мл)"},
+                {id: "51054", name: "Горчица", category: "Соусы весовые"},
+                {id: "51017", name: "Майонез 65%", category: "Соусы весовые"},
+                {id: "51065", name: "Кетчуп томатный", category: "Соусы весовые"},
+                {id: "51256", name: "Западный барбекю", category: "Соусы весовые"},
+                {id: "51217", name: "Соус \"Цезарь\"", category: "Соусы весовые"},
+                {id: "61025", name: "Соус Сырный Пармезан", category: "Соусы весовые"},
+                {id: "61023", name: "Соус Сырный", category: "Соусы весовые"},
+                {id: "61340", name: "Соус Трюфельный", category: "Соусы весовые"},
+                {id: "51267", name: "Соус ТАРТАР", category: "Соусы весовые"},
+                {id: "83112", name: "Соус томатный острый Хайнц", category: "Соусы весовые"},
+                {id: "61300", name: "Соус майонезный с хреном", category: "Соусы весовые"},
+                {id: "67027", name: "Соус Песто", category: "Соусы весовые"},
+                {id: "69061", name: "Салат Айсберг", category: "Овощи"},
+                {id: "59104", name: "Лук", category: "Овощи"},
+                {id: "59103", name: "Томаты", category: "Овощи"},
+                {id: "61084", name: "Огурцы марин.", category: "Овощи"},
+                {id: "69893", name: "Сухой Лук", category: "Овощи"},
+                {id: "69590", name: "Кофе в зернах", category: "Кофе/Чай"},
+                {id: "69601", name: "Горячий шоколад", category: "Кофе/Чай"},
+                {id: "67021", name: "Сироп фран. ваниль", category: "Кофе/Чай"},
+                {id: "67020", name: "Сироп сол. карамель", category: "Кофе/Чай"},
+                {id: "67140", name: "Сироп Тирамису", category: "Кофе/Чай"},
+                {id: "67135", name: "Сироп Айриш Крим", category: "Кофе/Чай"},
+                {id: "62119", name: "Сироп Амаретто", category: "Кофе/Чай"},
+                {id: "67151", name: "Стик Пунш Малина – Черная Смородина", category: "Кофе/Чай"},
+                {id: "69589", name: "Чай зеленый NEW", category: "Кофе/Чай"},
+                {id: "69588", name: "Чай черный NEW", category: "Кофе/Чай"},
+                {id: "59890", name: "Сиропы Пепси 20 л", category: "Напитки"},
+                {id: "59894", name: "Аква без газа", category: "Напитки"},
+                {id: "59895", name: "Аква с газом", category: "Напитки"},
+                {id: "59900", name: "Липтон - Лимон", category: "Напитки"},
+                {id: "59901", name: "Липтон - Зелёный", category: "Напитки"},
+                {id: "82279", name: "Эвервесс Кола", category: "Напитки"},
+                {id: "82280", name: "Эвервесс Кола б/с ПЭТ", category: "Напитки"},
+                {id: "82277", name: "Фрустайл Апельсин ПЭТ", category: "Напитки"},
+                {id: "82275", name: "Фрустайл Лимон Лайм ПЭТ", category: "Напитки"},
+                {id: "59887", name: "Дюшес ПЭТ", category: "Напитки"},
+                {id: "59363", name: "Адреналин Раш 0,25", category: "Напитки"},
+                {id: "59360", name: "Адреналин Раш 0,495", category: "Напитки"},
+                {id: "59465", name: "Флеш Ап энергия", category: "Напитки"},
+                {id: "67150", name: "Концентрат Манго-Маракуйя", category: "Напитки"},
+                {id: "53145", name: "J7 Сок Апельсиновый с мякотью", category: "Напитки"},
+                {id: "53140", name: "J7 Сок Яблочный Осветленный", category: "Напитки"},
+                {id: "59445", name: "Пиво Балтика Грейпфрут б/а", category: "Пиво в банках"},
+                {id: "64005", name: "Пиво Балтика ж/б (безалкогольное)", category: "Пиво в банках"},
+                {id: "59425", name: "Пиво Балтика 7 ж/б 0,45л", category: "Пиво в банках"},
+                {id: "59420", name: "Пиво Туборг Грин ж/б 0,45л", category: "Пиво в банках"},
+                {id: "59455", name: "Пиво Жатецкий Гусь Черный ж/б 0,45л", category: "Пиво в банках"},
+                {id: "59400", name: "Пиво Туборг Грин", category: "Пиво на розлив"},
+                {id: "59405", name: "Пиво Балтика 7", category: "Пиво на розлив"},
+                {id: "59460", name: "Пиво Weisen", category: "Пиво на розлив"},
+                {id: "59450", name: "Пиво Айнзидлер Вайсбир", category: "Пиво на розлив"},
+                {id: "59440", name: "Пивной напиток Черри Найт", category: "Пиво на розлив"}
+            ];
+            
+            // Сохраняем продукты в localStorage, если их там еще нет
+            if (!localStorage.getItem('bkProducts')) {
+                localStorage.setItem('bkProducts', JSON.stringify(products));
+            } else {
+                products = JSON.parse(localStorage.getItem('bkProducts'));
+            }
+            
+            // Заполняем выпадающий список продуктов
+            function populateProductSelect() {
+                productSelect.innerHTML = '<option value="" selected disabled>Выберите продукт</option>';
+                
+                // Группируем продукты по категориям
+                const categories = {};
+                products.forEach(product => {
+                    if (!categories[product.category]) {
+                        categories[product.category] = [];
+                    }
+                    categories[product.category].push(product);
+                });
+                
+                // Создаем optgroup для каждой категории
+                for (const category in categories) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = category;
+                    
+                    categories[category].forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.textContent = `${product.id} - ${product.name}`;
+                        optgroup.appendChild(option);
+                    });
+                    
+                    productSelect.appendChild(optgroup);
+                }
+            }
+            
+            populateProductSelect();
+            
+            // Обработчик изменения выбора единиц измерения
+            packagingRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    unitLabel.textContent = this.value;
+                });
+            });
+            
+            // Функция для отображения перемещений
+            function displayTransfers(filter = '') {
+                transfersTable.innerHTML = '';
+                
+                const filteredTransfers = transfers.filter(transfer => {
+                    const searchStr = filter.toLowerCase();
+                    return (
+                        transfer.from.toLowerCase().includes(searchStr) ||
+                        transfer.to.toLowerCase().includes(searchStr) ||
+                        transfer.productName.toLowerCase().includes(searchStr) ||
+                        transfer.productId.toLowerCase().includes(searchStr)
+                    );
+                });
+                
+                if (filteredTransfers.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="8" class="text-center">Нет данных для отображения</td>`;
+                    transfersTable.appendChild(row);
+                    return;
+                }
+                
+                filteredTransfers.forEach((transfer, index) => {
+                    const row = document.createElement('tr');
+                    row.dataset.index = index;
+                    row.innerHTML = `
+                        <td><input type="checkbox" class="transfer-checkbox" data-index="${index}"></td>
+                        <td>${transfer.date}</td>
+                        <td>${transfer.from}</td>
+                        <td>${transfer.to}</td>
+                        <td>${transfer.productId} - ${transfer.productName}</td>
+                        <td>${transfer.quantity}</td>
+                        <td>${transfer.unit}</td>
+                        <td>${transfer.comment || ''}</td>
+                    `;
+                    transfersTable.appendChild(row);
+                });
+                
+                // Добавляем обработчики для чекбоксов
+                document.querySelectorAll('.transfer-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const row = this.closest('tr');
+                        if (this.checked) {
+                            row.classList.add('selected');
+                        } else {
+                            row.classList.remove('selected');
+                        }
+                        updateDeleteButtonState();
+                    });
+                });
+            }
+            
+            // Обновление состояния кнопки удаления
+            function updateDeleteButtonState() {
+                const checkedBoxes = document.querySelectorAll('.transfer-checkbox:checked');
+                deleteSelectedBtn.disabled = checkedBoxes.length === 0;
+            }
+            
+            // Инициализация таблицы
+            displayTransfers();
+            
+            // Обработчик отправки формы перемещения
+            transferForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const from = document.getElementById('fromRestaurant').options[document.getElementById('fromRestaurant').selectedIndex].text;
+                const to = document.getElementById('toRestaurant').options[document.getElementById('toRestaurant').selectedIndex].text;
+                const productId = document.getElementById('product').value;
+                const productName = document.getElementById('product').options[document.getElementById('product').selectedIndex].text.split(' - ')[1];
+                const quantity = document.getElementById('quantity').value;
+                const unit = document.querySelector('input[name="packaging"]:checked').value;
+                const date = document.getElementById('date').value;
+                const comment = document.getElementById('comment').value;
+                
+                // Валидация
+                if (!from || !to || !productId || !quantity || !date) {
+                    alert('Пожалуйста, заполните все обязательные поля!');
+                    return;
+                }
+                
+                // Создаем новое перемещение
+                const newTransfer = {
+                    from,
+                    to,
+                    productId,
+                    productName,
+                    quantity,
+                    unit,
+                    date,
+                    comment,
+                    timestamp: new Date().getTime()
+                };
+                
+                // Добавляем в массив и сохраняем
+                transfers.unshift(newTransfer);
+                localStorage.setItem('bkTransfers', JSON.stringify(transfers));
+                
+                // Обновляем таблицу
+                displayTransfers();
+                
+                // Сбрасываем форму (кроме даты)
+                transferForm.reset();
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('packagingPiece').checked = true;
+                unitLabel.textContent = 'шт';
+                
+                // Показываем уведомление
+                alert('Перемещение успешно сохранено!');
+            });
+            
+            // Поиск
+            searchInput.addEventListener('input', function() {
+                displayTransfers(this.value);
+            });
+            
+            // Управление формой добавления продукта
+            showProductFormBtn.addEventListener('click', function() {
+                productForm.style.display = 'block';
+                this.style.display = 'none';
+            });
+            
+            cancelProductFormBtn.addEventListener('click', function() {
+                productForm.style.display = 'none';
+                showProductFormBtn.style.display = 'block';
+                newProductForm.reset();
+            });
+            
+            // Обработчик отправки формы добавления продукта
+            newProductForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const category = document.getElementById('newProductCategory').value;
+                const code = document.getElementById('newProductCode').value;
+                const name = document.getElementById('newProductName').value;
+                
+                // Проверяем, нет ли уже продукта с таким кодом
+                if (products.some(p => p.id === code)) {
+                    alert('Продукт с таким кодом уже существует!');
+                    return;
+                }
+                
+                // Добавляем новый продукт
+                const newProduct = {
+                    id: code,
+                    name: name,
+                    category: category
+                };
+                
+                products.push(newProduct);
+                localStorage.setItem('bkProducts', JSON.stringify(products));
+                
+                // Обновляем список продуктов
+                populateProductSelect();
+                
+                // Сбрасываем и скрываем форму
+                newProductForm.reset();
+                productForm.style.display = 'none';
+                showProductFormBtn.style.display = 'block';
+                
+                // Показываем уведомление
+                alert('Продукт успешно добавлен!');
+            });
+            
+            // Удаление выбранных перемещений
+            deleteSelectedBtn.addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите удалить выбранные перемещения?')) {
+                    const checkedBoxes = document.querySelectorAll('.transfer-checkbox:checked');
+                    const indexesToDelete = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.index));
+                    
+                    // Удаляем перемещения в обратном порядке, чтобы не сбить индексы
+                    indexesToDelete.sort((a, b) => b - a).forEach(index => {
+                        transfers.splice(index, 1);
+                    });
+                    
+                    // Сохраняем и обновляем таблицу
+                    localStorage.setItem('bkTransfers', JSON.stringify(transfers));
+                    displayTransfers(searchInput.value);
+                    
+                    // Обновляем состояние кнопки удаления
+                    deleteSelectedBtn.disabled = true;
+                }
+            });
+            
+            // Выделение всех чекбоксов
+            selectAllCheckbox.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.transfer-checkbox');
+                checkboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                    const row = cb.closest('tr');
+                    if (this.checked) {
+                        row.classList.add('selected');
+                    } else {
+                        row.classList.remove('selected');
+                    }
+                });
+                updateDeleteButtonState();
+            });
+        });
+    </script>
+</body>
+</html>
